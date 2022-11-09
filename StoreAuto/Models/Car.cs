@@ -9,19 +9,15 @@ namespace StoreAuto.Models
     public class Car
     {
         public int Id { get; set; }
+        public bool IsCash { get; set; }
+
+        public CompleteSet CompleteSet { get; set; }
+        public Color Color { get; set; }
+
+        public int AvailabilityCarId { get; set; }
+        public AvailabilityCar AvailabilityCar { get; set; }
 
         public int InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
-
-        public int ColorId { get; set; }
-        public Color Color { get; set; }
-
-        public int CompleteSetId { get; set; }
-        public CompleteSet CompleteSet { get; set; }
-
-        public int StorageId { get; set; }
-        public Storage Storage { get; set; }
-
-        public bool IsCash { get; set; }
     }
 }

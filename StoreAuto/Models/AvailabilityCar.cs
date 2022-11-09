@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace StoreAuto.Models
 {
-    internal class AvailabilityCar
+    public class AvailabilityCar
     {
+        public int Id { get; set; }
+
         public int? CarId { get; set; }
         public Car Car { get; set; }
 
-        public int? StorageId { get; set; }
         public Storage Storage { get; set; }
     }
 }

@@ -7,9 +7,7 @@ namespace StoreAuto
     {
         static void Main(string[] args)
         {
-            using var dbContext = new ApplicationDbContext();
 
-            dbContext.Database.EnsureCreated();
         }
     }
 }

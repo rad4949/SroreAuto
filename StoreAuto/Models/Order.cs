@@ -9,12 +9,11 @@ namespace StoreAuto.Models
     public class Order
     {
         public int Id { get; set; }
+        public DateTime DateOrder { get; set; }
+        public DateTime Term { get; set; }
 
         public int InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
-
-        DateTime DateOrder { get; set; }
-        DateTime Term { get; set; }
 
         public List<CompleteSet> CompleteSets { get; set; }
     }
