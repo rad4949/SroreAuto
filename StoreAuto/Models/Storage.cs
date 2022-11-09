@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace StoreAuto.Models
 {
-    internal class Storage
+    public class Storage
     {
         public int Id { get; set; }
         public string Address { get; set; }
+
+        List<AvailabilityCar> AvailabilityCars { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StoreAuto.EF;
+using System;
 
 namespace StoreAuto
 {
@@ -6,7 +7,9 @@ namespace StoreAuto
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            using var dbContext = new ApplicationDbContext();
+
+            dbContext.Database.EnsureCreated();
         }
     }
 }

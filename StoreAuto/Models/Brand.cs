@@ -12,5 +12,8 @@ namespace StoreAuto.Models
         public string BrandName { get; set; }
         public string Country { get; set; }
 
+
+        public List<Model> Models { get; set; }
+
     }
 }

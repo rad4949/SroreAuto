@@ -9,8 +9,13 @@ namespace StoreAuto.Models
     public class Model
     {
         public int Id { get; set; }
+
         public int BrandId { get; set; }
+        public Brand Brand { get; set; }
+
         public string ModelName { get; set; }
         public string BodyType { get; set; }
+
+        public List<CompleteSet> CompletedSets { get; set; }
     }
 }
