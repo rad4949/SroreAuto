@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StoreAuto.EF;
 
 namespace StoreAuto.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221111170413_NewConfiguration")]
+    partial class NewConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,13 +69,8 @@ namespace StoreAuto.Migrations
                     b.Property<int>("AvailabilityCarId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ColorCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ColorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CompleteSetId")
                         .HasColumnType("int");
@@ -89,9 +86,9 @@ namespace StoreAuto.Migrations
                     b.HasIndex("AvailabilityCarId")
                         .IsUnique();
 
-                    b.HasIndex("CompleteSetId");
+                    b.HasIndex("ColorId");
 
-                    b.HasIndex("ColorName", "ColorCode");
+                    b.HasIndex("CompleteSetId");
 
                     b.ToTable("Cars");
                 });
@@ -119,14 +116,18 @@ namespace StoreAuto.Migrations
 
             modelBuilder.Entity("StoreAuto.Models.Color", b =>
                 {
-                    b.Property<string>("ColorName")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ColorCode")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ColorName", "ColorCode")
-                        .HasName("PK_NameCode");
+                    b.Property<string>("ColorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Colors");
                 });
@@ -154,9 +155,7 @@ namespace StoreAuto.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(25000m);
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -165,8 +164,6 @@ namespace StoreAuto.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("CompleteSets");
-
-                    b.HasCheckConstraint("Price", "Price > 10000 AND Price < 99999999");
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Invoice", b =>
@@ -189,8 +186,7 @@ namespace StoreAuto.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id")
-                        .HasName("PK_Invoice");
+                    b.HasKey("Id");
 
                     b.HasIndex("CarId")
                         .IsUnique()
@@ -288,15 +284,15 @@ namespace StoreAuto.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StoreAuto.Models.CompleteSet", "CompleteSet")
+                    b.HasOne("StoreAuto.Models.Color", "Color")
                         .WithMany("Cars")
-                        .HasForeignKey("CompleteSetId")
+                        .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StoreAuto.Models.Color", "Color")
+                    b.HasOne("StoreAuto.Models.CompleteSet", "CompleteSet")
                         .WithMany("Cars")
-                        .HasForeignKey("ColorName", "ColorCode")
+                        .HasForeignKey("CompleteSetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -9,7 +9,6 @@ namespace StoreAuto.Models
     public class AvailabilityCar
     {
         public int Id { get; set; }
-
         public int? CarId { get; set; }
         public Car Car { get; set; }
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,12 @@ namespace StoreAuto.EF
         public DbSet<Order> Orders { get; set; }
         public DbSet<Storage> Storages { get; set; }
 
+        public ApplicationDbContext()
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var builder = new ConfigurationBuilder();
@@ -38,10 +45,51 @@ namespace StoreAuto.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
+              .Entity<Invoice>()
+              .HasKey(x => x.Id)
+              .HasName("PK_Invoice");
+
+            modelBuilder
+                .Entity<Color>()
+                .HasKey(x => new { x.ColorName, x.ColorCode })
+                .HasName("PK_NameCode");
+
+            modelBuilder
+                .Entity<AvailabilityCar>()
+                .HasOne(x => x.Car)
+                .WithOne(x => x.AvailabilityCar)
+                .HasForeignKey<Car>(t => t.AvailabilityCarId);
+
+            modelBuilder
+                .Entity<Invoice>()
+                .ToTable("AllInvoices");
+
+            modelBuilder
+               .Entity<Invoice>()
+               .Property(x => x.CarId)
+               .HasColumnName("VIN_Number");
+
+            modelBuilder
                 .Entity<Invoice>()
                 .HasOne(x => x.Client)
                 .WithMany(x => x.Invoices)
                 .IsRequired();
+
+            modelBuilder
+               .Entity<CompleteSet>()
+               .Property(x => x.Price)
+               .HasDefaultValue(25000);
+
+            modelBuilder
+               .Entity<CompleteSet>()
+               .HasCheckConstraint("Price", "Price > 10000 AND Price < 99999999");
+
+            modelBuilder
+               .Entity<Model>()
+               .Property(x => x.ModelName)
+               .HasColumnName("Name")
+               .HasMaxLength(255);
+
 
             modelBuilder
                 .Entity<Car>()
@@ -66,12 +114,6 @@ namespace StoreAuto.EF
                 .HasOne(x => x.CompleteSet)
                 .WithMany(x => x.Cars)
                 .IsRequired();
-
-            modelBuilder
-                .Entity<AvailabilityCar>()
-                .HasOne(x => x.Car)
-                .WithOne(x => x.AvailabilityCar)
-                .HasForeignKey<Car>(t => t.AvailabilityCarId);
 
             modelBuilder
                 .Entity<AvailabilityCar>()

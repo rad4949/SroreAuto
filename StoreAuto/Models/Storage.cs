@@ -23,3 +23,5 @@ namespace StoreAuto.Models
         public List<AvailabilityCar> AvailabilityCars { get; set; }
     }
 }
+
+
