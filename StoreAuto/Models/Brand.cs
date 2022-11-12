@@ -13,7 +13,7 @@ namespace StoreAuto.Models
         public string Country { get; set; }
 
 
-        public List<Model> Models { get; set; }
+        public List<Model> Models { get; set; } = new List<Model>();
 
     }
 }

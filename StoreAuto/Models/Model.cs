@@ -12,7 +12,8 @@ namespace StoreAuto.Models
         public string ModelName { get; set; }
         public string BodyType { get; set; }
 
+        public int BrandId { get; set; }
         public Brand Brand { get; set; }
-        public List<CompleteSet> CompletedSets { get; set; }
+        public List<CompleteSet> CompletedSets { get; set; } = new List<CompleteSet>();
     }
 }

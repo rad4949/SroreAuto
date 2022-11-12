@@ -12,7 +12,7 @@ namespace StoreAuto.Models
         public string ColorName { get; set; }
         public string ColorCode { get; set; }
 
-        public List<Car> Cars { get; set; }
+        public List<Car> Cars { get; set; } = new List<Car>();
 
     }
 }

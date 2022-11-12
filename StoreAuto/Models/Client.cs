@@ -13,6 +13,6 @@ namespace StoreAuto.Models
         public string LastName { get; set; }
         public int Phone { get; set; }
 
-        public List<Invoice> Invoices { get; set; }
+        public List<Invoice> Invoices { get; set; } = new List<Invoice>();
     }
 }

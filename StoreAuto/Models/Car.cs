@@ -11,7 +11,10 @@ namespace StoreAuto.Models
         public int Id { get; set; }
         public bool IsCash { get; set; }
 
+        public int CompleteSetId { get; set; }
         public CompleteSet CompleteSet { get; set; }
+
+        public int ColorId { get; set; }
         public Color Color { get; set; }
 
         public int AvailabilityCarId { get; set; }

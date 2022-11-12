@@ -15,6 +15,6 @@ namespace StoreAuto.Models
         public int InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
 
-        public List<CompleteSet> CompleteSets { get; set; }
+        public List<CompleteSet> CompleteSets { get; set; } = new List<CompleteSet>();
     }
 }

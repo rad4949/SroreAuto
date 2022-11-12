@@ -14,8 +14,10 @@ namespace StoreAuto.Models
         public int ModelYear { get; set; }
         public decimal Price { get; set; }
 
+        public int ModelId { get; set; }
         public Model Model { get; set; }
+        public int OrderId { get; set; }
         public Order Order { get; set; }
-        public List<Car> Cars { get; set; }
+        public List<Car> Cars { get; set; } = new List<Car>();
     }
 }

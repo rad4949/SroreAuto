@@ -20,7 +20,7 @@ namespace StoreAuto.Models
         [Column("ClientAddress")]
         public string Address { get; set; }
 
-        public List<AvailabilityCar> AvailabilityCars { get; set; }
+        public List<AvailabilityCar> AvailabilityCars { get; set; } = new List<AvailabilityCar>();
     }
 }
 

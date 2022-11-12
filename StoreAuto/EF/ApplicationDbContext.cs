@@ -8,7 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using StoreAuto;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace StoreAuto.EF
 {
@@ -44,6 +46,114 @@ namespace StoreAuto.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            Client client1 = new Client { Id = 1, FirstName = "Igor", LastName = "Radchuk", Phone = 0665001701 };
+            Client client2 = new Client { Id = 2, FirstName = "Nazar", LastName = "Shevchuk", Phone = 0675001705 };
+
+            Invoice invoice1 = new Invoice
+            {
+                Id = 1,
+                CarId = 1,
+                OrderId = 1,
+                ClientId = 1,
+                Order = null,
+                Client = client1,
+                Date = DateTime.Now
+            };
+            Invoice invoice2 = new Invoice
+            {
+                Id = 2,
+                CarId = 2,
+                OrderId = 2,
+                ClientId = 2,
+                Client = client2,
+                Date = DateTime.Now
+            };
+
+            Order order2 = new Order
+            {
+                Id = 1,
+                InvoiceId = 2,
+                Invoice = invoice2,
+                DateOrder = DateTime.Now,
+                Term = DateTime.Today.AddDays(20)
+            };
+
+            Brand brand1 = new Brand { Id = 1, BrandName = "Mercedes-Benz", Country = "Germany" };
+            Brand brand2 = new Brand { Id = 2, BrandName = "Audi", Country = "Germany" };
+
+            Model model1 = new Model { Id = 1, BrandId = 1, Brand = brand1, ModelName = "GLS", BodyType = "Crossover" };
+            Model model2 = new Model { Id = 2, BrandId = 2, Brand = brand2, ModelName = "A6", BodyType = "Universal" };
+
+            Storage storage1 = new Storage { Id = 1, Address = "Shevcenka 5" };
+            Storage storage2 = new Storage { Id = 2, Address = "Konovaltsa 8" };
+
+            AvailabilityCar availabilityCar1 = new AvailabilityCar { Id = 1, StorageId = 1, CarId = 1, Storage = storage1 };
+            AvailabilityCar availabilityCar2 = new AvailabilityCar { Id = 2, StorageId = 2, CarId = 2, Storage = storage2 };
+
+            Color color1 = new Color { ColorName = "Black", ColorCode = "12qw" };
+            Color color2 = new Color { ColorName = "White", ColorCode = "1111" };
+
+            CompleteSet completeSet1 = new CompleteSet
+            {
+                Id = 1,
+                ModelId = 1,
+                OrderId = 1,
+                EngineVolume = 3,
+                FuelType = "Gasoline",
+                ModelYear = 2021,
+                Model = model1,
+                Order = null,
+                Price = 250000
+            };
+
+            CompleteSet completeSet2 = new CompleteSet
+            {
+                Id = 2,
+                ModelId = 2,
+                OrderId = 2,
+                EngineVolume = 2,
+                FuelType = "Gasoline",
+                ModelYear = 2020,
+                Model = model2,
+                Price = 200000
+            };
+
+            Car car1 = new Car
+            {
+                Id = 1,
+                InvoiceId = 1,
+                AvailabilityCarId = 1,
+                AvailabilityCar = availabilityCar1,
+                Color = color1,
+                CompleteSet = completeSet1,
+                IsCash = true,
+                Invoice = invoice1
+            };
+
+            Car car2 = new Car
+            {
+                Id = 2,
+                InvoiceId = 2,
+                AvailabilityCarId = 2,
+                AvailabilityCar = availabilityCar2,
+                Color = color2,
+                CompleteSet = completeSet2,
+                IsCash = true,
+                Invoice = invoice2
+            };
+
+            modelBuilder.Entity<Invoice>().HasData(invoice1, invoice1);
+            modelBuilder.Entity<Client>().HasData(client1, client2);
+            modelBuilder.Entity<Order>().HasData(order2);
+            modelBuilder.Entity<Color>().HasData(color1, color2);
+            modelBuilder.Entity<Car>().HasData(car1, car2);
+            modelBuilder.Entity<AvailabilityCar>().HasData(availabilityCar1, availabilityCar2);
+            modelBuilder.Entity<Storage>().HasData(storage1, storage2);
+            modelBuilder.Entity<CompleteSet>().HasData(completeSet1, completeSet2);
+            modelBuilder.Entity<Model>().HasData(model1, model2);
+            modelBuilder.Entity<Brand>().HasData(brand1, brand2);
+
+
             modelBuilder
               .Entity<Invoice>()
               .HasKey(x => x.Id)
@@ -90,6 +200,10 @@ namespace StoreAuto.EF
                .HasColumnName("Name")
                .HasMaxLength(255);
 
+            modelBuilder
+              .Entity<AvailabilityCar>()
+              .Property(x => x.Id)
+              .IsRequired();
 
             modelBuilder
                 .Entity<Car>()
@@ -113,29 +227,34 @@ namespace StoreAuto.EF
                 .Entity<Car>()
                 .HasOne(x => x.CompleteSet)
                 .WithMany(x => x.Cars)
+                .HasForeignKey("CompleteSetId")
                 .IsRequired();
 
             modelBuilder
                 .Entity<AvailabilityCar>()
                 .HasOne(x => x.Storage)
                 .WithMany(x => x.AvailabilityCars)
+                .HasForeignKey("StorageId")
                 .IsRequired();
 
             modelBuilder
                .Entity<CompleteSet>()
                .HasOne(x => x.Order)
-               .WithMany(x => x.CompleteSets);
+               .WithMany(x => x.CompleteSets)
+               .HasForeignKey("OrderId");
 
             modelBuilder
                .Entity<CompleteSet>()
                .HasOne(x => x.Model)
                .WithMany(x => x.CompletedSets)
+               .HasForeignKey("ModelId")
                .IsRequired();
 
             modelBuilder
               .Entity<Model>()
               .HasOne(x => x.Brand)
               .WithMany(x => x.Models)
+              .HasForeignKey("BrandId")
               .IsRequired();
 
         }

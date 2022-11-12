@@ -12,6 +12,7 @@ namespace StoreAuto.Models
         public int? CarId { get; set; }
         public Car Car { get; set; }
 
+        public int StorageId { get; set; }
         public Storage Storage { get; set; }
     }
 }
