@@ -71,9 +71,6 @@ namespace StoreAuto.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ColorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ColorName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -153,7 +150,7 @@ namespace StoreAuto.Migrations
                     b.Property<int>("ModelYear")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -320,9 +317,7 @@ namespace StoreAuto.Migrations
 
                     b.HasOne("StoreAuto.Models.Order", "Order")
                         .WithMany("CompleteSets")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Model");
 

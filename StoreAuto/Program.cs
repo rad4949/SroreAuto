@@ -63,7 +63,7 @@ namespace StoreAuto
             AvailabilityCar availabilityCar1 = new AvailabilityCar();
             AvailabilityCar availabilityCar2 = new AvailabilityCar();
 
-            CompleteSet completeSet1 = new CompleteSet { EngineVolume = 3, FuelType = "Gasoline", ModelYear = 2021, Order = null, Price = 250000 };
+            CompleteSet completeSet1 = new CompleteSet { EngineVolume = 3, FuelType = "Gasoline", ModelYear = 2021, Price = 250000 };
             CompleteSet completeSet2 = new CompleteSet { EngineVolume = 2, FuelType = "Gasoline", ModelYear = 2020, Price = 200000 };
 
             Color color1 = new Color { ColorName = "Black", ColorCode = "12qw" };

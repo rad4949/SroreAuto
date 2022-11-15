@@ -14,7 +14,8 @@ namespace StoreAuto.Models
         public int CompleteSetId { get; set; }
         public CompleteSet CompleteSet { get; set; }
 
-        public int ColorId { get; set; }
+        public string ColorName { get; set; }
+        public string ColorCode { get; set; }
         public Color Color { get; set; }
 
         public int AvailabilityCarId { get; set; }
