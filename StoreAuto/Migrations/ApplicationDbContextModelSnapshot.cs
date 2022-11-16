@@ -34,9 +34,33 @@ namespace StoreAuto.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CarId")
+                        .IsUnique()
+                        .HasFilter("[CarId] IS NOT NULL");
+
                     b.HasIndex("StorageId");
 
                     b.ToTable("AvailabilityCars");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CarId = 1,
+                            StorageId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CarId = 2,
+                            StorageId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CarId = 3,
+                            StorageId = 3
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Brand", b =>
@@ -55,6 +79,26 @@ namespace StoreAuto.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BrandName = "Mercedes-Benz",
+                            Country = "Germany"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BrandName = "Audi",
+                            Country = "Germany"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BrandName = "Mercedes-Benz",
+                            Country = "Germany"
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Car", b =>
@@ -63,9 +107,6 @@ namespace StoreAuto.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AvailabilityCarId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ColorCode")
                         .IsRequired()
@@ -78,22 +119,42 @@ namespace StoreAuto.Migrations
                     b.Property<int>("CompleteSetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsCash")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AvailabilityCarId")
-                        .IsUnique();
 
                     b.HasIndex("CompleteSetId");
 
                     b.HasIndex("ColorName", "ColorCode");
 
                     b.ToTable("Cars");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ColorCode = "12qw",
+                            ColorName = "Black",
+                            CompleteSetId = 1,
+                            IsCash = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ColorCode = "1111",
+                            ColorName = "White",
+                            CompleteSetId = 2,
+                            IsCash = true
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ColorCode = "1rr1",
+                            ColorName = "Black",
+                            CompleteSetId = 3,
+                            IsCash = false
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Client", b =>
@@ -115,6 +176,29 @@ namespace StoreAuto.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            FirstName = "Igor",
+                            LastName = "Radchuk",
+                            Phone = 665001701
+                        },
+                        new
+                        {
+                            Id = 2,
+                            FirstName = "Nazar",
+                            LastName = "Shevchuk",
+                            Phone = 675001705
+                        },
+                        new
+                        {
+                            Id = 3,
+                            FirstName = "Petro",
+                            LastName = "Romuniuk",
+                            Phone = 678801788
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Color", b =>
@@ -129,6 +213,23 @@ namespace StoreAuto.Migrations
                         .HasName("PK_NameCode");
 
                     b.ToTable("Colors");
+
+                    b.HasData(
+                        new
+                        {
+                            ColorName = "Black",
+                            ColorCode = "12qw"
+                        },
+                        new
+                        {
+                            ColorName = "White",
+                            ColorCode = "1111"
+                        },
+                        new
+                        {
+                            ColorName = "Black",
+                            ColorCode = "1rr1"
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.CompleteSet", b =>
@@ -167,6 +268,36 @@ namespace StoreAuto.Migrations
                     b.ToTable("CompleteSets");
 
                     b.HasCheckConstraint("Price", "Price > 10000 AND Price < 99999999");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EngineVolume = 3,
+                            FuelType = "Gasoline",
+                            ModelId = 1,
+                            ModelYear = 2021,
+                            Price = 250000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EngineVolume = 2,
+                            FuelType = "Gasoline",
+                            ModelId = 2,
+                            ModelYear = 2020,
+                            OrderId = 1,
+                            Price = 200000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EngineVolume = 3,
+                            FuelType = "Gasoline",
+                            ModelId = 3,
+                            ModelYear = 2020,
+                            Price = 210000m
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Invoice", b =>
@@ -203,6 +334,30 @@ namespace StoreAuto.Migrations
                         .HasFilter("[OrderId] IS NOT NULL");
 
                     b.ToTable("AllInvoices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CarId = 1,
+                            ClientId = 1,
+                            Date = new DateTime(2022, 11, 16, 21, 11, 53, 860, DateTimeKind.Local).AddTicks(4733)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CarId = 2,
+                            ClientId = 2,
+                            Date = new DateTime(2022, 11, 16, 21, 11, 53, 862, DateTimeKind.Local).AddTicks(236),
+                            OrderId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CarId = 3,
+                            ClientId = 3,
+                            Date = new DateTime(2022, 11, 16, 21, 11, 53, 862, DateTimeKind.Local).AddTicks(257)
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Model", b =>
@@ -228,6 +383,29 @@ namespace StoreAuto.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Models");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BodyType = "Crossover",
+                            BrandId = 1,
+                            ModelName = "GLS"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BodyType = "Universal",
+                            BrandId = 2,
+                            ModelName = "A6"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BodyType = "Sedan",
+                            BrandId = 3,
+                            ModelName = "CLC"
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Order", b =>
@@ -240,15 +418,20 @@ namespace StoreAuto.Migrations
                     b.Property<DateTime>("DateOrder")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Term")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateOrder = new DateTime(2022, 11, 16, 21, 11, 53, 862, DateTimeKind.Local).AddTicks(936),
+                            Term = new DateTime(2022, 12, 6, 0, 0, 0, 0, DateTimeKind.Local)
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Storage", b =>
@@ -267,27 +450,44 @@ namespace StoreAuto.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StorageAuto");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Shevcenka 5"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "Konovaltsa 8"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "Dachna 11"
+                        });
                 });
 
             modelBuilder.Entity("StoreAuto.Models.AvailabilityCar", b =>
                 {
+                    b.HasOne("StoreAuto.Models.Car", "Car")
+                        .WithOne("AvailabilityCar")
+                        .HasForeignKey("StoreAuto.Models.AvailabilityCar", "CarId");
+
                     b.HasOne("StoreAuto.Models.Storage", "Storage")
                         .WithMany("AvailabilityCars")
                         .HasForeignKey("StorageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Car");
+
                     b.Navigation("Storage");
                 });
 
             modelBuilder.Entity("StoreAuto.Models.Car", b =>
                 {
-                    b.HasOne("StoreAuto.Models.AvailabilityCar", "AvailabilityCar")
-                        .WithOne("Car")
-                        .HasForeignKey("StoreAuto.Models.Car", "AvailabilityCarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("StoreAuto.Models.CompleteSet", "CompleteSet")
                         .WithMany("Cars")
                         .HasForeignKey("CompleteSetId")
@@ -299,8 +499,6 @@ namespace StoreAuto.Migrations
                         .HasForeignKey("ColorName", "ColorCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AvailabilityCar");
 
                     b.Navigation("Color");
 
@@ -358,11 +556,6 @@ namespace StoreAuto.Migrations
                     b.Navigation("Brand");
                 });
 
-            modelBuilder.Entity("StoreAuto.Models.AvailabilityCar", b =>
-                {
-                    b.Navigation("Car");
-                });
-
             modelBuilder.Entity("StoreAuto.Models.Brand", b =>
                 {
                     b.Navigation("Models");
@@ -370,6 +563,8 @@ namespace StoreAuto.Migrations
 
             modelBuilder.Entity("StoreAuto.Models.Car", b =>
                 {
+                    b.Navigation("AvailabilityCar");
+
                     b.Navigation("Invoice");
                 });
 

@@ -18,10 +18,10 @@ namespace StoreAuto.Models
         public string ColorCode { get; set; }
         public Color Color { get; set; }
 
-        public int AvailabilityCarId { get; set; }
+        //public int AvailabilityCarId { get; set; }
         public AvailabilityCar AvailabilityCar { get; set; }
 
-        public int InvoiceId { get; set; }
+        //public int InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
     }
 }

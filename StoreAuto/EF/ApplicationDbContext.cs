@@ -29,8 +29,8 @@ namespace StoreAuto.EF
 
         public ApplicationDbContext()
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -82,7 +82,6 @@ namespace StoreAuto.EF
             Order order2 = new Order
             {
                 Id = 1,
-                InvoiceId = 2,
                 DateOrder = DateTime.Now,
                 Term = DateTime.Today.AddDays(20)
             };
@@ -141,10 +140,8 @@ namespace StoreAuto.EF
             Car car1 = new Car
             {
                 Id = 1,
-                InvoiceId = 1,
                 ColorName = color1.ColorName,
                 ColorCode = color1.ColorCode,
-                AvailabilityCarId = 1,
                 CompleteSetId = 1,
 
                 IsCash = true,
@@ -153,23 +150,18 @@ namespace StoreAuto.EF
             Car car2 = new Car
             {
                 Id = 2,
-                InvoiceId = 2,
                 ColorName = color2.ColorName,
                 ColorCode = color2.ColorCode,
-                AvailabilityCarId = 2,
                 CompleteSetId = 2,
 
                 IsCash = true,
             };
 
-
             Car car3 = new Car
             {
                 Id = 3,
-                InvoiceId = 3,
                 ColorName = color3.ColorName,
                 ColorCode = color3.ColorCode,
-                AvailabilityCarId = 3,
                 CompleteSetId = 3,
 
                 IsCash = false,
@@ -226,18 +218,23 @@ namespace StoreAuto.EF
               .Property(x => x.Id)
               .IsRequired();
 
+          
+            modelBuilder
+                .Entity<Car>()
+                .HasOne(x => x.AvailabilityCar)
+                .WithOne(x => x.Car)
+                .HasForeignKey<AvailabilityCar>(t => t.CarId);
+            //modelBuilder
+            //  .Entity<AvailabilityCar>()
+            //  .HasOne(x => x.Car)
+            //  .WithOne(x => x.AvailabilityCar)
+            //  .HasForeignKey<Car>(t => t.AvailabilityCarId);
 
             modelBuilder
                 .Entity<Car>()
                 .HasOne(x => x.Invoice)
                 .WithOne(x => x.Car)
-                .HasForeignKey<Invoice>(t => t.CarId);
-
-            modelBuilder
-                .Entity<AvailabilityCar>()
-                .HasOne(x => x.Car)
-                .WithOne(x => x.AvailabilityCar)
-                .HasForeignKey<Car>(t => t.AvailabilityCarId);
+                .HasForeignKey<Invoice>(t => t.CarId);          
 
             modelBuilder
                 .Entity<Order>()
@@ -246,13 +243,13 @@ namespace StoreAuto.EF
                 .HasForeignKey<Invoice>(t => t.OrderId);
 
 
+
             modelBuilder
                .Entity<Car>()
                .HasOne(x => x.Color)
                .WithMany(x => x.Cars)
                .HasForeignKey(x => new { x.ColorName, x.ColorCode })
                .IsRequired();
-
 
             modelBuilder
                 .Entity<Invoice>()

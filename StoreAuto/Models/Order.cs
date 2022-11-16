@@ -12,7 +12,7 @@ namespace StoreAuto.Models
         public DateTime DateOrder { get; set; }
         public DateTime Term { get; set; }
 
-        public int InvoiceId { get; set; }
+       // public int InvoiceId { get; set; }
         public Invoice Invoice { get; set; }
 
         public List<CompleteSet> CompleteSets { get; set; } = new List<CompleteSet>();
