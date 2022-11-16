@@ -61,21 +61,21 @@ namespace TPT_Example
         }
 
         public static void ReadData()
-        {
+        {         
             using var dbContext = new ApplicationDbContext();
 
             var advancedSubscriptions = dbContext.AdvancedSubscriptions.ToList();
 
             foreach (var advancedSubscription in advancedSubscriptions)
             {
-                Console.WriteLine($"Продвинутая подписка. Цена: {advancedSubscription.Price}.");
+                Console.WriteLine($"Advanced subscription. Price: {advancedSubscription.Price}.");
             }
 
             var premiumSubscriptions = dbContext.PremiumSubscriptions.ToList();
 
             foreach (var premiumSubscription in premiumSubscriptions)
             {
-                Console.WriteLine($"Премиум подписка. Цена: {premiumSubscription.Price}.");
+                Console.WriteLine($"Premium subscription. Price: {premiumSubscription.Price}.");
             }
         }
     }
