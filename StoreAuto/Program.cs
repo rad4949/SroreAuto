@@ -37,8 +37,8 @@ namespace StoreAuto
             Join();
             Console.WriteLine("\n------------------------GroupBy-------------------------------");
             GroupBy();
-            Console.WriteLine("\n------------------------DistinctGroupBy-------------------------------");
-            DistinctGroupBy();
+            Console.WriteLine("\n------------------------Distinct-------------------------------");
+            Distinct();
             Console.WriteLine("\n------------------------Any-------------------------------");
             Any();
             Console.WriteLine("\n------------------------All-------------------------------");
@@ -53,6 +53,8 @@ namespace StoreAuto
             Sum();
             Console.WriteLine("\n------------------------Count-------------------------------");
             Count();
+            Console.WriteLine("\n------------------------ExplicitLoading-------------------------------");
+            ExplicitLoading();
         }
 
         public static void DefaultDatabase()
@@ -108,7 +110,8 @@ namespace StoreAuto
         {
             ApplicationDbContext context = new ApplicationDbContext();
 
-            var temp = context.Invoices.Include(x => x.Client).Where(x => x.ClientId == 2).First();
+            var temp = context.Invoices.Include(x => x.Client)
+                .Where(x => x.ClientId == 2).First();
 
             temp.Client.FirstName = "Orest";
 
@@ -369,7 +372,7 @@ namespace StoreAuto
             }
         }
 
-        public static void DistinctGroupBy()
+        public static void Distinct()
         {
             ApplicationDbContext context = new ApplicationDbContext();
 
@@ -446,6 +449,37 @@ namespace StoreAuto
 
             Console.WriteLine($"Count cars = {cars}");
         }
+         
+        public static void ExplicitLoading()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
 
+            var model = context.Models.First();
+
+            var totalModelsQuantity = context
+                .Entry(model)
+                .Collection(x => x.CompletedSets)
+                .Query()
+                .Count();
+
+            context
+                .Entry(model)
+                .Collection(x => x.CompletedSets)
+                .Load();
+
+            context
+                .Entry(model)
+                .Reference(x => x.Brand)
+                .Load();
+
+            Console.WriteLine("Model information");
+            Console.WriteLine($"Name: {model.ModelName}");
+
+            Console.WriteLine($"Total count: {totalModelsQuantity}.");
+            foreach (var item in model.CompletedSets)
+            {
+                Console.WriteLine($"Complet set where id - { item.Id}, price = {item.Price}.");
+            }
+        }
     }
 }
