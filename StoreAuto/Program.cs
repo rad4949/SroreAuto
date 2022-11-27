@@ -55,6 +55,12 @@ namespace StoreAuto
             Count();
             Console.WriteLine("\n------------------------ExplicitLoading-------------------------------");
             ExplicitLoading();
+            Console.WriteLine("\n------------------------AsNotTracking-------------------------------");
+            AsNotTracking();
+            Console.WriteLine("\n------------------------Procedure-------------------------------");
+            Procedure();
+            Console.WriteLine("\n------------------------Function-------------------------------");
+            Function();
         }
 
         public static void DefaultDatabase()
@@ -62,6 +68,28 @@ namespace StoreAuto
             ApplicationDbContext context = new ApplicationDbContext();
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+
+            var createSql = @"
+                create procedure [dbo].[GetOrderedByCompleteSet] as
+                begin
+                    select * from dbo.CompleteSets
+                    order by Price desc
+                end
+            ";
+
+            context.Database.ExecuteSqlRaw(createSql);
+
+            createSql = @"
+                create function [dbo].[SearchCompleteSetsById] (@id int)
+                returns table
+                as
+                return
+                    select * from dbo.CompleteSets
+                    where Id = @id
+            ";
+
+            context.Database.ExecuteSqlRaw(createSql);
+
         }
 
         public static void Create()
@@ -479,6 +507,67 @@ namespace StoreAuto
             foreach (var item in model.CompletedSets)
             {
                 Console.WriteLine($"Complet set where id - { item.Id}, price = {item.Price}.");
+            }
+        }
+
+        public static void AsNotTracking()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var temp = context.CompleteSets.Where(x => x.Id == 2).Single();
+
+            Console.WriteLine($"Price = {temp.Price}");
+
+            temp.Price = 500000;
+
+            context.SaveChanges();
+
+            temp = context.CompleteSets.Where(x => x.Id == 2).AsNoTracking().Single();
+
+            Console.WriteLine($"Price = {temp.Price}");
+
+            temp.Price = 60000;
+
+            context.SaveChanges();
+
+            temp = context.CompleteSets.Where(x => x.Id == 2).AsNoTracking().Single();
+
+            Console.WriteLine($"Price = {temp.Price}");
+        }
+
+        public static void Procedure()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var completeSet = context
+                .CompleteSets
+                .FromSqlRaw("EXECUTE dbo.GetOrderedByCompleteSet").ToList();
+
+            Console.WriteLine("CompleteSets:");
+            foreach (var item in completeSet)
+            {
+                Console.WriteLine("--------");
+                Console.WriteLine(
+                    $"Id: {item.Id}. " +
+                    $"Price: {item.Price}.");
+            }
+        }
+
+        public static void Function()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var completeSet = context
+                .CompleteSets
+                .FromSqlRaw("SELECT * FROM dbo.SearchCompleteSetsById(2)").ToList();
+
+            Console.WriteLine("Founds:");
+            foreach (var item in completeSet)
+            {
+                Console.WriteLine("--------");
+                Console.WriteLine(
+                    $"Id: {item.Id}. " +
+                    $"Price: {item.Price}.");
             }
         }
     }

@@ -178,7 +178,7 @@ namespace StoreAuto.EF
             modelBuilder.Entity<Model>().HasData(model1, model2, model3);
             modelBuilder.Entity<Brand>().HasData(brand1, brand2, brand3);
 
-
+          
             modelBuilder
               .Entity<Invoice>()
               .HasKey(x => x.Id)
