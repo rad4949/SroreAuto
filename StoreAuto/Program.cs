@@ -2,65 +2,82 @@
 using StoreAuto.EF;
 using StoreAuto.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Threading;
+using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace StoreAuto
 {
     internal class Program
     {
+        static AutoResetEvent waitHandler = new AutoResetEvent(true);
         static void Main(string[] args)
         {
             DefaultDatabase();
 
-            Console.WriteLine("\n------------------------Read-------------------------------");
-            Read_LINQ_Method();
-            Create();
-            Console.WriteLine("\n------------------------Create-------------------------------");
-            Read_LINQ_Query_Syntax();
-            Update();
-            Console.WriteLine("\n------------------------Update-------------------------------");
-            Read_LINQ_Query_Syntax();
-            Delete();
-            Console.WriteLine("\n------------------------Delete-------------------------------");
-            Read_Select_Many();
+            //Console.WriteLine("\n------------------------Read-------------------------------");
+            //Read_LINQ_Method();
+            //Create();
+            //Console.WriteLine("\n------------------------Create-------------------------------");
+            //Read_LINQ_Query_Syntax();
+            //Update();
+            //Console.WriteLine("\n------------------------Update-------------------------------");
+            //Read_LINQ_Query_Syntax();
+            //Delete();
+            //Console.WriteLine("\n------------------------Delete-------------------------------");
+            //Read_Select_Many();
 
 
-            Console.WriteLine("\n------------------------Union-------------------------------");
-            Union();
-            Console.WriteLine("\n------------------------Except-------------------------------");
-            Except();
-            Console.WriteLine("\n------------------------Intersect-------------------------------");
-            Intersect();
-            Console.WriteLine("\n------------------------Join-------------------------------");
-            Join();
-            Console.WriteLine("\n------------------------GroupBy-------------------------------");
-            GroupBy();
-            Console.WriteLine("\n------------------------Distinct-------------------------------");
-            Distinct();
-            Console.WriteLine("\n------------------------Any-------------------------------");
-            Any();
-            Console.WriteLine("\n------------------------All-------------------------------");
-            All();
-            Console.WriteLine("\n------------------------Min-------------------------------");
-            Min();
-            Console.WriteLine("\n------------------------Max-------------------------------");
-            Max();
-            Console.WriteLine("\n------------------------Average-------------------------------");
-            Average();
-            Console.WriteLine("\n------------------------Sum-------------------------------");
-            Sum();
-            Console.WriteLine("\n------------------------Count-------------------------------");
-            Count();
-            Console.WriteLine("\n------------------------ExplicitLoading-------------------------------");
-            ExplicitLoading();
-            Console.WriteLine("\n------------------------AsNotTracking-------------------------------");
-            AsNotTracking();
-            Console.WriteLine("\n------------------------Procedure-------------------------------");
-            Procedure();
-            Console.WriteLine("\n------------------------Function-------------------------------");
-            Function();
+            //Console.WriteLine("\n------------------------Union-------------------------------");
+            //Union();
+            //Console.WriteLine("\n------------------------Except-------------------------------");
+            //Except();
+            //Console.WriteLine("\n------------------------Intersect-------------------------------");
+            //Intersect();
+            //Console.WriteLine("\n------------------------Join-------------------------------");
+            //Join();
+            //Console.WriteLine("\n------------------------GroupBy-------------------------------");
+            //GroupBy();
+            //Console.WriteLine("\n------------------------Distinct-------------------------------");
+            //Distinct();
+            //Console.WriteLine("\n------------------------Any-------------------------------");
+            //Any();
+            //Console.WriteLine("\n------------------------All-------------------------------");
+            //All();
+            //Console.WriteLine("\n------------------------Min-------------------------------");
+            //Min();
+            //Console.WriteLine("\n------------------------Max-------------------------------");
+            //Max();
+            //Console.WriteLine("\n------------------------Average-------------------------------");
+            //Average();
+            //Console.WriteLine("\n------------------------Sum-------------------------------");
+            //Sum();
+            //Console.WriteLine("\n------------------------Count-------------------------------");
+            //Count();
+            //Console.WriteLine("\n------------------------ExplicitLoading-------------------------------");
+            //ExplicitLoading();
+            //Console.WriteLine("\n------------------------AsNotTracking-------------------------------");
+            //AsNotTracking();
+            //Console.WriteLine("\n------------------------Procedure-------------------------------");
+            //Procedure();
+            //Console.WriteLine("\n------------------------Function-------------------------------");
+            //Function();
+
+            Thread create = new Thread(CreateThread);
+            create.Start();
+
+            Thread read = new Thread(ReadThread);
+            read.Start();
+
+            Thread update = new Thread(UpdateThread);
+            update.Start();
+
+            Thread delete = new Thread(DeleteThread);
+            delete.Start();
+
         }
 
         public static void DefaultDatabase()
@@ -90,6 +107,166 @@ namespace StoreAuto
 
             context.Database.ExecuteSqlRaw(createSql);
 
+        }
+
+        public static void CreateThread()
+        {
+            waitHandler.WaitOne();
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            Invoice invoice = new Invoice { Date = DateTime.Now };
+            Client client = new Client { FirstName = "Paulo", LastName = "Melnyk", Phone = 0665001701 };
+            Brand brand = new Brand { BrandName = "Citroen", Country = "France" };
+            Model model = new Model { ModelName = "C4", BodyType = "Miniven" };
+            Storage storage = new Storage { Address = "Shevcenka 5" };
+            Car car = new Car { IsCash = true, Invoice = invoice };
+            AvailabilityCar availabilityCar = new AvailabilityCar();
+            CompleteSet completeSet = new CompleteSet
+            {
+                EngineVolume = 2,
+                FuelType = "Gasoline",
+                ModelYear = 2018,
+                Price = 25000
+            };
+            Color color = new Color { ColorName = "Black", ColorCode = "123w" };
+
+            model.Brand = brand;
+            completeSet.Model = model;
+            car.CompleteSet = completeSet;
+            car.Color = color;
+            availabilityCar.Storage = storage;
+            availabilityCar.Car = car;
+            invoice.Client = client;
+            invoice.Car = car;
+
+            context.Add(model);
+            context.Add(completeSet);
+            context.Add(car);
+            context.Add(availabilityCar);
+            context.Add(invoice);
+
+            context.SaveChanges();
+            waitHandler.Set();
+        }
+
+        public static void ReadThread()
+        {
+            waitHandler.WaitOne();
+
+            ApplicationDbContext context = new ApplicationDbContext();
+            var clients = context.Clients.ToList();
+            foreach (var item in clients)
+            {
+                Console.WriteLine($"Id - {item.Id}, Name - {item.FirstName}");
+            }
+
+            waitHandler.Set();
+        }
+
+        public static void UpdateThread()
+        {
+            waitHandler.WaitOne();
+
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var temp = context.Clients.OrderBy(x => x.Id).LastOrDefault();
+
+            temp.FirstName = "Mukyta";
+
+            context.SaveChanges();
+
+            waitHandler.Set();
+        }
+
+        public static void DeleteThread()
+        {
+            waitHandler.WaitOne();
+
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var temp = context.Clients.OrderBy(x => x.Id).LastOrDefault();
+
+            context.Clients.Remove(temp);
+
+            context.SaveChanges();
+
+            waitHandler.Set();
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+            return (await context.SaveChangesAsync() >= 0);
+        }
+        public async Task CreateAsync()
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            Invoice invoice = new Invoice { Date = DateTime.Now };
+            Client client = new Client { FirstName = "Muron", LastName = "Melnyk", Phone = 0665001701 };
+            Brand brand = new Brand { BrandName = "Citroen", Country = "France" };
+            Model model = new Model { ModelName = "C4", BodyType = "Miniven" };
+            Storage storage = new Storage { Address = "Shevcenka 5" };
+            Car car = new Car { IsCash = true, Invoice = invoice };
+            AvailabilityCar availabilityCar = new AvailabilityCar();
+            CompleteSet completeSet = new CompleteSet
+            {
+                EngineVolume = 2,
+                FuelType = "Gasoline",
+                ModelYear = 2018,
+                Price = 25000
+            };
+            Color color = new Color { ColorName = "Black", ColorCode = "123w" };
+
+            model.Brand = brand;
+            completeSet.Model = model;
+            car.CompleteSet = completeSet;
+            car.Color = color;
+            availabilityCar.Storage = storage;
+            availabilityCar.Car = car;
+            invoice.Client = client;
+            invoice.Car = car;
+
+            await context.AddAsync(model);
+            await context.AddAsync(completeSet);
+            await context.AddAsync(car);
+            await context.AddAsync(availabilityCar);
+            await context.AddAsync(invoice);
+
+            if (await SaveChangesAsync())
+            {
+                Console.WriteLine("Success");
+            }
+        }
+        public async Task<Car> GetCarAsync(int id)
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            return await context.Cars.Where(p => p.Id == id).FirstOrDefaultAsync();
+        }
+        public async Task UpdateCarAsync(int id)
+        {
+            var car = await GetCarAsync(id);
+
+            car.IsCash = false;
+
+            if (await SaveChangesAsync())
+            {
+                Console.WriteLine("Success");
+            }
+        }
+        public async Task DeleteCarAsync(int id)
+        {
+            ApplicationDbContext context = new ApplicationDbContext();
+
+            var temp = await context.Cars.Where(x => x.Id == id).SingleAsync();
+
+            context.Cars.Remove(temp);
+
+            if (await SaveChangesAsync())
+            {
+                Console.WriteLine("Success");
+            }
         }
 
         public static void Create()
@@ -477,7 +654,7 @@ namespace StoreAuto
 
             Console.WriteLine($"Count cars = {cars}");
         }
-         
+
         public static void ExplicitLoading()
         {
             ApplicationDbContext context = new ApplicationDbContext();
@@ -506,7 +683,7 @@ namespace StoreAuto
             Console.WriteLine($"Total count: {totalModelsQuantity}.");
             foreach (var item in model.CompletedSets)
             {
-                Console.WriteLine($"Complet set where id - { item.Id}, price = {item.Price}.");
+                Console.WriteLine($"Complet set where id - {item.Id}, price = {item.Price}.");
             }
         }
 
